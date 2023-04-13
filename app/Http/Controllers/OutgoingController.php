@@ -217,11 +217,7 @@ class OutgoingController extends Controller
 
     public function data()
     {
-        $payreqs = Payreq::select('id', 'payreq_num', 'user_id', 'approve_date', 'payreq_type', 'payreq_idr', 'outgoing_date', 'rab_id')
-            ->selectRaw('datediff(now(), approve_date) as days')
-            ->whereNull('outgoing_date')
-            ->orderBy('approve_date', 'asc')
-            ->get();
+        $payreqs = $this->getOutgoing()->get();
 
         return datatables()->of($payreqs)
             ->editColumn('payreq_num', function ($payreq) {
@@ -248,5 +244,13 @@ class OutgoingController extends Controller
             ->addColumn('action', 'outgoing.action')
             ->rawColumns(['action', 'payreq_num'])
             ->toJson();
+    }
+
+    public function getOutgoing()
+    {
+        return Payreq::select('id', 'payreq_num', 'user_id', 'approve_date', 'payreq_type', 'payreq_idr', 'outgoing_date', 'rab_id')
+            ->selectRaw('datediff(now(), approve_date) as days')
+            ->whereNull('outgoing_date')
+            ->orderBy('approve_date', 'asc');
     }
 }

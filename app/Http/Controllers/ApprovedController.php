@@ -119,11 +119,7 @@ class ApprovedController extends Controller
 
     public function data()
     {
-        $payreqs = Payreq::select('id', 'payreq_num', 'user_id', 'approve_date', 'payreq_type', 'payreq_idr', 'outgoing_date', 'rab_id')
-            ->selectRaw('datediff(now(), approve_date) as days')
-            ->whereNull('outgoing_date')
-            ->orderBy('approve_date', 'desc')
-            ->get();
+        $payreqs = $this->getApproved()->get();
 
         return datatables()->of($payreqs)
             ->editColumn('payreq_num', function ($payreq) {
@@ -149,21 +145,7 @@ class ApprovedController extends Controller
 
     public function all_data()
     {
-        $payreqs = Payreq::select(
-            'id',
-            'payreq_num',
-            'user_id',
-            'approve_date',
-            'payreq_idr',
-            'outgoing_date',
-            'realization_num',
-            'realization_amount',
-            'realization_date',
-            'verify_date',
-        )
-            // ->selectRaw('datediff(now(), realization_date) as days')
-            ->orderBy('approve_date', 'desc')
-            ->get();
+        $payreqs = $this->getAllPayreqs()->get();
 
         return datatables()->of($payreqs)
             ->editColumn('approve_date', function ($payreq) {
@@ -204,5 +186,31 @@ class ApprovedController extends Controller
             ->addColumn('action', 'approved.action_all')
             ->rawColumns(['action'])
             ->toJson();
+    }
+
+    public function getApproved()
+    {
+        return Payreq::select('id', 'payreq_num', 'user_id', 'approve_date', 'payreq_type', 'payreq_idr', 'outgoing_date', 'rab_id')
+            ->selectRaw('datediff(now(), approve_date) as days')
+            ->whereNull('outgoing_date')
+            ->orderBy('approve_date', 'desc');
+    }
+
+    public function getAllPayreqs()
+    {
+        return Payreq::select(
+            'id',
+            'payreq_num',
+            'user_id',
+            'payreq_type',
+            'approve_date',
+            'payreq_idr',
+            'outgoing_date',
+            'realization_num',
+            'realization_amount',
+            'realization_date',
+            'verify_date',
+        )
+            ->orderBy('approve_date', 'desc');
     }
 }

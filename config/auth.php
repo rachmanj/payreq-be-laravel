@@ -13,8 +13,11 @@ return [
     |
     */
 
+    // set the default that can be using api and web
+    // 'defaults' => request()->is('api/*') ? ['guard' => 'api', 'passwords' => 'users'] : ['guard' => 'web', 'passwords' => 'users'],
+
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'api',
         'passwords' => 'users',
     ],
 
@@ -38,6 +41,10 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'api' => [
+            'driver' => 'jwt',
             'provider' => 'users',
         ],
     ],

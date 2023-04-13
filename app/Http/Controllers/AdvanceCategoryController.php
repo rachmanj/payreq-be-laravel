@@ -27,12 +27,17 @@ class AdvanceCategoryController extends Controller
 
     public function data()
     {
-        $adv_categories = AdvanceCategory::orderBy('code', 'asc')->get();
+        $adv_categories = $this->getAdvanceCategory()->get();
 
         return datatables()->of($adv_categories)
             ->addIndexColumn()
             ->addColumn('action', 'adv-category.action')
             ->rawColumns(['action'])
             ->toJson();
+    }
+
+    public function getAdvanceCategory()
+    {
+        return AdvanceCategory::orderBy('code', 'asc');
     }
 }

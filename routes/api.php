@@ -18,17 +18,19 @@ Route::post('/login', [AuthApiController::class, "login"]);
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/logout', [AuthApiController::class, "logout"]);
     Route::get('/isauth', [AuthApiController::class, "isauth"]);
+
+    // PAYREQS API
+    Route::prefix('payreqs')->group(function () {
+        Route::get('/', [PayreqApiController::class, 'index']);
+        Route::post('/check-unique', [PayreqApiController::class, 'check_unique']);
+        Route::put('/{id}', [PayreqApiController::class, 'update']);
+        Route::get('/{id}', [PayreqApiController::class, 'getById']);
+    });
 });
 
 Route::post('/invoices', [InvoiceApiController::class, 'store']);
 
-// PAYREQS API
-Route::prefix('payreqs')->group(function () {
-    Route::get('/', [PayreqApiController::class, 'index']);
-    Route::post('/check-unique', [PayreqApiController::class, 'check_unique']);
-    Route::put('/{id}', [PayreqApiController::class, 'update']);
-    Route::get('/{id}', [PayreqApiController::class, 'getById']);
-});
+
 
 //APPROVED API
 Route::prefix('approved')->group(function () {
